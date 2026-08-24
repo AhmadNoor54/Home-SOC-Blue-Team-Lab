@@ -21,7 +21,7 @@
 
 | VM                 | RAM  |   CPU   |             Disk           |        OS             |
 |--------------------|------|---------|----------------------------|-----------------------|
-| Kali-Attacker      | 2 GB | 2 cores | 40 GB (resized from 20 GB) | Kali Linux 2025.4     |
+| Kali-Attacker      | 2 GB | 2 cores | 40 GB                      | Kali Linux 2025.4     |
 | Ubuntu-SOC-Server  | 6 GB | 2 cores | 40 GB                      | Ubuntu Server 22.04.5 |
 | Windows11-Endpoint | 4 GB | 2 cores | 50 GB                      | Windows 11 Pro        |
 
