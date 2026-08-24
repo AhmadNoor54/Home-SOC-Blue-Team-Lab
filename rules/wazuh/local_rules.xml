@@ -1,0 +1,203 @@
+<!--
+  Home SOC Blue Team Lab — Custom Wazuh Rules
+  Install path on Ubuntu-SOC-Server: /var/ossec/etc/rules/local_rules.xml
+
+  IMPORTANT: These rules use <field name="alert.signature"> rather than
+  <match>, because Wazuh's built-in Suricata rule 86601 sets
+  <options>no_full_log</options>, which disables full-log text matching.
+  See docs/lessons-learned.md for the full explanation.
+
+  After editing this file: sudo /var/ossec/bin/wazuh-control restart
+-->
+
+<group name="suricata,recon,web_attack,">
+
+  <!-- Reconnaissance -->
+  <rule id="100001" level="5">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">Nikto Scanner Detected</field>
+    <description>Reconnaissance: Nikto vulnerability scan detected</description>
+    <mitre>
+      <id>T1595</id>
+    </mitre>
+  </rule>
+
+  <rule id="100002" level="5">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">Gobuster Scan Detected</field>
+    <description>Reconnaissance: Gobuster directory brute-force scan detected</description>
+    <mitre>
+      <id>T1595</id>
+    </mitre>
+  </rule>
+
+  <rule id="100003" level="3">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">Curl Usage Detected</field>
+    <description>Reconnaissance: Curl tool usage detected against web server</description>
+    <mitre>
+      <id>T1595</id>
+    </mitre>
+  </rule>
+
+  <rule id="100004" level="3">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">Wget Usage Detected</field>
+    <description>Reconnaissance: Wget tool usage detected against web server</description>
+    <mitre>
+      <id>T1595</id>
+    </mitre>
+  </rule>
+
+  <!-- Web Attacks -->
+  <rule id="100005" level="10">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">SQL Injection Attempt Detected</field>
+    <description>Web Attack: SQL Injection attempt detected</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+  </rule>
+
+  <rule id="100006" level="8">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">XSS Script Tag Detected</field>
+    <description>Web Attack: Cross-Site Scripting (XSS) attempt detected</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+  </rule>
+
+  <rule id="100007" level="8">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">XSS Event Handler Detected</field>
+    <description>Web Attack: Cross-Site Scripting (XSS) event handler attempt detected</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+  </rule>
+
+  <!-- Command Injection -->
+  <rule id="100008" level="10">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">Command Injection - Semicolon</field>
+    <description>Web Attack: Command Injection via semicolon detected</description>
+    <mitre>
+      <id>T1059</id>
+    </mitre>
+  </rule>
+
+  <rule id="100009" level="10">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">Command Injection - AND Operator</field>
+    <description>Web Attack: Command Injection via AND operator detected</description>
+    <mitre>
+      <id>T1059</id>
+    </mitre>
+  </rule>
+
+  <rule id="100010" level="10">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">Command Injection - Pipe</field>
+    <description>Web Attack: Command Injection via pipe detected</description>
+    <mitre>
+      <id>T1059</id>
+    </mitre>
+  </rule>
+
+  <!-- Web Shell / Upload -->
+  <rule id="100011" level="12">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">PHP Web Shell Upload Detected</field>
+    <description>Web Attack: PHP web shell upload detected</description>
+    <mitre>
+      <id>T1505.003</id>
+    </mitre>
+  </rule>
+
+  <rule id="100012" level="10">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">PHP System Call Detected</field>
+    <description>Web Attack: PHP dangerous system call function detected</description>
+    <mitre>
+      <id>T1059</id>
+    </mitre>
+  </rule>
+
+  <rule id="100013" level="12">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">Netcat Reverse Shell Upload Detected</field>
+    <description>Web Attack: Netcat reverse shell payload upload detected</description>
+    <mitre>
+      <id>T1505.003</id>
+    </mitre>
+  </rule>
+
+  <!-- Reverse Shell -->
+  <rule id="100014" level="12">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">Netcat Reverse Shell Detected</field>
+    <description>Reverse Shell: Netcat reverse shell output detected</description>
+    <mitre>
+      <id>T1059</id>
+    </mitre>
+  </rule>
+
+  <rule id="100015" level="13">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">Reverse Shell Indicator - Shell Output Detected</field>
+    <description>Reverse Shell: Bash TCP reverse shell output detected</description>
+    <mitre>
+      <id>T1059</id>
+    </mitre>
+  </rule>
+
+  <!-- Denial of Service -->
+  <rule id="100016" level="10">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">HTTP Flood Detected</field>
+    <description>Denial of Service: HTTP flood attack detected</description>
+    <mitre>
+      <id>T1498</id>
+    </mitre>
+  </rule>
+
+  <rule id="100017" level="10">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">SYN Flood Detected</field>
+    <description>Denial of Service: SYN flood attack detected</description>
+    <mitre>
+      <id>T1498</id>
+    </mitre>
+  </rule>
+
+  <!-- Malware -->
+  <rule id="100018" level="12">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">EICAR Test File Detected</field>
+    <description>Malware: EICAR test file transfer detected</description>
+    <mitre>
+      <id>T1036</id>
+    </mitre>
+  </rule>
+
+  <!-- DNS -->
+  <rule id="100019" level="8">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">DNS Long Query Detected</field>
+    <description>DNS: Unusually long DNS query detected (possible tunneling)</description>
+    <mitre>
+      <id>T1071.004</id>
+    </mitre>
+  </rule>
+
+  <rule id="100020" level="8">
+    <if_sid>86601</if_sid>
+    <field name="alert.signature">DNS High Entropy Query Detected</field>
+    <description>DNS: High entropy DNS query detected (possible DGA/C2)</description>
+    <mitre>
+      <id>T1071.004</id>
+    </mitre>
+  </rule>
+
+</group>

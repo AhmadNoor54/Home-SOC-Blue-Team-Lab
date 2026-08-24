@@ -1,0 +1,23 @@
+# Logs and generated security telemetry
+*.log
+*.jsonl
+*.pcap
+*.pcapng
+
+# Wazuh / Suricata runtime files
+wazuh-alerts-*.json
+fast.log
+eve.json
+stats.log
+
+
+# VirtualBox artifacts
+*.vdi
+*.vbox
+*.vbox-prev
+*.iso
+
+# Temporary files
+tmp/
+temp/
+*.tmp

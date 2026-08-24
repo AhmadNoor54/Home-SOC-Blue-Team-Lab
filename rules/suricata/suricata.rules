@@ -1,0 +1,60 @@
+# ============================================================
+# Home SOC Blue Team Lab — Custom Suricata Rules
+# Install path on Ubuntu-SOC-Server: /etc/suricata/rules/suricata.rules
+# All 20 rules below were individually tested against live traffic
+# generated from Kali-Attacker. See docs/detection-testing.md for the
+# full test log, including bugs found and fixed.
+# ============================================================
+
+# ---------- Reconnaissance ----------
+alert http any any -> $HOME_NET any (msg:"Nikto Scanner Detected"; flow:to_server,established; http.user_agent; content:"Nikto"; threshold:type limit, track by_src, count 1, seconds 60; sid:1000300; rev:2;)
+
+alert http any any -> $HOME_NET any (msg:"Gobuster Scan Detected"; flow:to_server,established; http.user_agent; content:"gobuster"; threshold:type limit, track by_src, count 1, seconds 60; sid:1000301; rev:2;)
+
+alert http any any -> $HOME_NET any (msg:"Curl Usage Detected"; flow:to_server,established; http.user_agent; content:"curl"; sid:1000302; rev:1;)
+
+alert http any any -> $HOME_NET any (msg:"Wget Usage Detected"; flow:to_server,established; http.user_agent; content:"Wget"; sid:1000303; rev:1;)
+
+# ---------- Web Attacks: SQLi / XSS ----------
+alert http any any -> $HOME_NET any (msg:"SQL Injection Attempt Detected"; flow:to_server,established; http.uri; content:"UNION"; nocase; pcre:"/UNION.+SELECT/i"; sid:1001001; rev:1;)
+
+alert http any any -> $HOME_NET any (msg:"XSS Script Tag Detected"; flow:to_server,established; http.uri; content:"<script"; nocase; sid:1001002; rev:1;)
+
+alert http any any -> $HOME_NET any (msg:"XSS Event Handler Detected"; flow:to_server,established; http.uri; pcre:"/on(load|error|click|mouseover)\s*=/i"; sid:1001003; rev:1;)
+
+# ---------- Command Injection ----------
+# NOTE: special characters (';', '&', '|') must be escaped or hex-encoded
+# in Suricata content matches — see docs/lessons-learned.md
+alert http any any -> $HOME_NET any (msg:"Command Injection - Semicolon"; flow:to_server,established; http.uri; content:"\;"; sid:111111; rev:3;)
+
+alert http any any -> $HOME_NET any (msg:"Command Injection - AND Operator"; flow:to_server,established; http.uri; content:"&&"; sid:111112; rev:2;)
+
+alert http any any -> $HOME_NET any (msg:"Command Injection - Pipe"; flow:to_server,established; http.uri; content:"|7C|"; sid:111113; rev:3;)
+
+# ---------- Web Shell / Upload ----------
+alert http any any -> $HOME_NET any (msg:"PHP Web Shell Upload Detected"; flow:to_server,established; http.uri; content:".php"; nocase; http.request_body; content:"<?php"; sid:1002001; rev:1;)
+
+alert http any any -> $HOME_NET any (msg:"PHP System Call Detected"; flow:to_server,established; http.uri; pcre:"/(system|exec|shell_exec|passthru)\s*\(/i"; sid:1002002; rev:1;)
+
+alert http any any -> $HOME_NET any (msg:"Netcat Reverse Shell Upload Detected"; flow:to_server,established; http.request_body; content:"nc "; content:"-e"; sid:1002003; rev:1;)
+
+# ---------- Reverse Shell ----------
+# NOTE: client-side-only strings (e.g. "/dev/tcp/") never cross the wire.
+# Detection must be output-based (shell response content). Port 1514 is
+# excluded to avoid false positives against Wazuh agent<->manager traffic.
+alert tcp $HOME_NET any -> any !1514 (msg:"Netcat Reverse Shell Detected"; flow:to_server,established; content:"uid="; content:"$"; sid:1003001; rev:5;)
+
+alert tcp $HOME_NET any -> any any (msg:"Reverse Shell Indicator - Shell Output Detected"; flow:to_server,established; content:"uid="; sid:1003002; rev:2;)
+
+# ---------- Denial of Service ----------
+alert http any any -> $HOME_NET any (msg:"HTTP Flood Detected"; flow:to_server,established; threshold:type threshold, track by_src, count 50, seconds 10; sid:1004001; rev:1;)
+
+alert tcp any any -> $HOME_NET any (msg:"SYN Flood Detected"; flags:S; threshold:type threshold, track by_src, count 100, seconds 10; sid:1004002; rev:1;)
+
+# ---------- Malware ----------
+alert http $HOME_NET any -> any any (msg:"EICAR Test File Detected"; flow:to_client,established; file_data; content:"X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*"; sid:1005001; rev:3;)
+
+# ---------- DNS ----------
+alert dns $HOME_NET any -> any any (msg:"DNS Long Query Detected"; dns.query; content:"."; pcre:"/^.{60,}$/"; sid:1006001; rev:1;)
+
+alert dns $HOME_NET any -> any any (msg:"DNS High Entropy Query Detected"; dns.query; pcre:"/^[a-zA-Z0-9]{25,}\./"; sid:1006002; rev:1;)
