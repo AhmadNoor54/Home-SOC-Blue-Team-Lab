@@ -59,8 +59,6 @@ Full walkthrough: [`docs/attack-simulation.md`](docs/attack-simulation.md)
 
 ## Detection Validation
 
-Every custom signature was tested against controlled traffic rather than being left unverified.
-
 Detailed test log: [`docs/detection-testing.md`](docs/detection-testing.md)
 
 
@@ -106,79 +104,7 @@ More evidence: [`screenshots/README.md`](screenshots/README.md)
 
 ## Quick Setup
 
-### 1. Create the VMs
-
-Create the three virtual machines attach them to the same VirtualBox NAT Network.
-
-### 2. Configure the NAT Network
-
-Create:
-
-```text
-SOC-Lab-Network
-10.0.2.0/24
-```
-
-### 3. Install Wazuh
-
-On Ubuntu:
-
-```bash
-curl -sO https://packages.wazuh.com/4.12/wazuh-install.sh
-sudo bash ./wazuh-install.sh -a
-```
-
-### 4. Install the Windows Agent + Sysmon
-
-Deploy the Wazuh Agent from the dashboard, then configure Sysmon telemetry as documented in [`docs/setup-guide.md`](docs/setup-guide.md).
-
-### 5. Install Suricata
-
-```bash
-sudo apt update
-sudo apt install -y suricata
-```
-
-Copy the custom rules:
-
-```bash
-sudo cp rules/suricata/suricata.rules /etc/suricata/rules/suricata.rules
-```
-
-Validate:
-
-```bash
-sudo suricata -T -c /etc/suricata/suricata.yaml
-```
-
-### 6. Integrate Suricata with Wazuh
-
-Configure Wazuh to ingest:
-
-```text
-/var/log/suricata/eve.json
-```
-
-Then install the custom Wazuh rules:
-
-```bash
-sudo cp rules/wazuh/local_rules.xml /var/ossec/etc/rules/local_rules.xml
-sudo /var/ossec/bin/wazuh-logtest
-sudo /var/ossec/bin/wazuh-control restart
-```
-
-### 7. Start the Test Target
-
-```bash
-chmod +x scripts/test-webserver.sh
-./scripts/test-webserver.sh
-```
-
-### 8. Run the Attack Simulation
-
-Follow [`docs/attack-simulation.md`](docs/attack-simulation.md), then verify the resulting alerts in the Wazuh Dashboard.
-
-For the full build process, use [`docs/setup-guide.md`](docs/setup-guide.md).
+For Quick setup process, use [`docs/setup-guide.md`](docs/setup-guide.md).
 
 ---
 
@@ -193,22 +119,6 @@ scripts/       → Lab helper scripts
 screenshots/   → Project evidence and detection screenshots
 
 ```
-
-
-## Important Lessons Learned
-
-
-details: [`docs/lessons-learned.md`](docs/lessons-learned.md)
-
----
-
-## Known Limitations
-
-This is an educational detection lab, not a production SOC.
-
-Full details: [`docs/known-limitations.md`](docs/known-limitations.md)
-
----
 
 ## Ethical Use
 
@@ -249,7 +159,5 @@ Areas of interest:
 ---
 
 ## License
-
-This project is licensed under the **MIT License**.
 
 See [`LICENSE`](LICENSE).
