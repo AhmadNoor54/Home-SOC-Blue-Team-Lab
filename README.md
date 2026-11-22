@@ -53,8 +53,6 @@ Wazuh rules: [`rules/wazuh/local_rules.xml`](rules/wazuh/local_rules.xml)
 
 ## Attack Chain
 
-```
-
 Full walkthrough: [`docs/attack-simulation.md`](docs/attack-simulation.md)
 
 ---
@@ -63,33 +61,8 @@ Full walkthrough: [`docs/attack-simulation.md`](docs/attack-simulation.md)
 
 Every custom signature was tested against controlled traffic rather than being left unverified.
 
-Testing covered:
-
-- Nmap reconnaissance
-- Nikto scanning
-- Gobuster enumeration
-- Curl and Wget activity
-- SQL injection patterns
-- XSS patterns
-- Command injection
-- PHP web-shell upload patterns
-- Netcat payloads
-- Reverse-shell output
-- HTTP flood patterns
-- SYN flood patterns
-- EICAR test-file traffic
-- Long DNS queries
-- High-entropy DNS queries
-
-Each Wazuh rule from `100001` through `100020` was also validated using:
-
-```bash
-sudo /var/ossec/bin/wazuh-logtest
-```
-
 Detailed test log: [`docs/detection-testing.md`](docs/detection-testing.md)
 
----
 
 ## Evidence
 
@@ -135,7 +108,7 @@ More evidence: [`screenshots/README.md`](screenshots/README.md)
 
 ### 1. Create the VMs
 
-Create the three virtual machines listed above and attach them to the same VirtualBox NAT Network.
+Create the three virtual machines attach them to the same VirtualBox NAT Network.
 
 ### 2. Configure the NAT Network
 
@@ -221,7 +194,6 @@ screenshots/   → Project evidence and detection screenshots
 
 ```
 
----
 
 ## Important Lessons Learned
 
@@ -236,7 +208,6 @@ This is an educational detection lab, not a production SOC.
 
 Full details: [`docs/known-limitations.md`](docs/known-limitations.md)
 
----
 ---
 
 ## Ethical Use
