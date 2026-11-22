@@ -2,17 +2,14 @@
 
 ## Scope
 
-This repository contains a defensive cybersecurity laboratory with intentionally crafted attack traffic, IDS signatures, SIEM rules, and detection-testing commands.
-
-The material is designed for isolated, authorized environments.
+This repository contains a defensive cybersecurity lab for testing network detection, IDS signatures, SIEM rules, and security monitoring.
 
 ## Safe Use
 
-Only run the attack simulations against systems you own or have explicit permission to test.
-
-Do not point the commands, signatures, or scripts at public infrastructure, third-party systems, university networks, corporate networks, or any other environment without authorization.
-
-Keep the lab isolated from production systems and use snapshots before major configuration changes.
+- Run simulations only in isolated environments.
+- Test only systems you own or have permission to assess.
+- Never target public, third-party, or production networks without authorization.
+- Use virtual machine snapshots before major changes.
 
 ## Reporting a Problem
 
